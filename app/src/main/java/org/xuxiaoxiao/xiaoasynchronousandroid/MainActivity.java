@@ -12,9 +12,18 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-            Handler handler = new StackTraceHandler();
-            Message msg = handler.obtainMessage();
-            handler.sendMessage(msg);
-
+        SimpleLooper looper = new SimpleLooper();
+        looper.start();
+        looper.waitforStart();
+        Handler handler = new StackTraceHandler(looper.getLooper());
+        Message msg = handler.obtainMessage();
+        handler.sendMessage(msg);
+        /**
+         * The interesting thing to realize here is that
+         * we can send messages from the main thread to the background thread managed by SimpleLooper
+         * (or even from the background thread to the main thread) and,
+         * in doing so, hand over work from background threads to the main thread—for example,
+         * to have it update the user interface with the results of background processing.
+         */
     }
 }
